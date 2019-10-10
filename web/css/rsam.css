@@ -1,0 +1,30 @@
+body{
+  background-color: #E6E6FA; 
+}
+input#plot:active{
+  cursor: wait;
+}
+button:active{
+  cursor: wait;
+}
+section{
+  margin-left: 30px;
+}
+td,th{
+  vertical-align: top;
+  padding: 5px;
+}
+div.toolbar{
+  margin-left: 30px;
+  margin-bottom: 3px;
+}
+div.plot{
+  //border: 1px solid gray;
+  border-radius: 4px;
+  margin-left: 25px;
+  margin-right: 25px;
+  margin-bottom: 25px;
+}
+select,input,button{
+  border-radius: 4px;
+}
