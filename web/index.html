@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+ <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ <link rel="stylesheet" href="./css/rsam.css">
+<TITLE>ffRSAM</TITLE>
+</HEAD>
+<body>
+<section class='menu'>
+<h2>ffRSAM Viewer</h2>
+<a href="./help.pdf" target="_blank">View User Manual</a>
+<p>
+<form id='menu'>
+<table>
+<tr>
+<td>
+  Channels:<BR><select id='channel' required multiple></select><p>
+  <a href="#" onClick="win=window.open('./channels.html','Channels','width=600,height=600'); return false;">View Channels</a>
+</td>
+<td>
+  Period:<BR><select id='period' required ></select><p>
+</td>
+<td>
+  Frequency Filters (Hz):<BR><select id='filter' required multiple></select><p>
+</td>
+<td>
+  <table>
+    <tr>
+  <td>Start Date/Time (UTC): </td>
+  <td><input id="start_date" type="date" >
+  <input id="start_time" type="time" ></td>
+    </tr>
+    <tr>
+  <td>End Date/Time (UTC): </td>
+  <td><input id="end_date" type="date" >
+  <input id="end_time" type="time" ></td>
+    </tr>
+   </table>
+</td>
+<td>
+  Plot Type:<P>
+   <select id='plottype'>
+     <option>Line</option>
+     <option>Scatter</option>
+   </select>
+   <p>
+  Max Y-axis:<P>
+  <input type='number' id='maxy' max="20000">
+  <P>
+  <input title='Create plot using selected parameters' type='button' id='plot' value='Plot' onclick="drawChart()" >
+</td>
+</tr>
+</table>
+</form>
+</section>
+<div id="plots">
+</div>
+</body>
+</HTML>
+<script type="text/javascript" src="./js/moment.js"></script>
+<script>
+  //const moment = require('moment');
+  let m = moment();
+  var dformat='YYYY-MM-DD';
+  var today = m.format(dformat);
+  var current_time = m.format('H:mm'); 
+  var yesterday = m.subtract(1, 'days').format(dformat);
+  document.getElementById('start_date').value=yesterday;
+  document.getElementById('start_time').value=current_time;
+  document.getElementById('end_date').value=today;
+  document.getElementById('end_time').value=current_time;
+</script>
+<script type="text/javascript" src="./js/menu.js"></script>
+<script type="text/javascript" src="./js/plot.js"></script>
+
