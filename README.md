@@ -68,6 +68,13 @@ b)	Copy config_template.py to config.py and edit config.py (watch out for proper
 5)	Test the scripts installation by running “./run.sh 10”.  The run.sh script takes in the period, in minutes, as the argument.  It will calculate the RSAM and ff RSAM values for the channels specified in config.py for the specified period.  End time for the RSAM is calculated as [ current time ] – [ buffer ] – ([ current time]%[period]).  Resolve any errors and ensure that the 10 minute RSAM data is stored in the database.  
 6)	Set up cron jobs. The parameter to run.sh is the period in minutes. The desired periods to use for RSAM calculations may vary by installation.  Below example sets up cron jobs to calculate RSAM/ffRSAM for 10 minutes, 1 hour, 4 hours, 12 hours, and 1 day.  Replace ~/scripts with the directory where rsam.zip was unpacked.  Replace /data/log with the directory where you want the log files to go.  In this set up only logs for the latest run of each job is stored. For periods of hour or more, specify the minute time as the amount of buffer or lag time used in config.py.  For example, config_template.py has a default buffer of 5 minutes.  The cron jobs below reflect that 5 minutes in the minute configuration (last 4 entries).
 
+```
+*/10 * * * * ~/scripts/rsam/run.sh 10 > /data/log/rsam10.log 2>&1
+5 * * * * ~/scripts/rsam/run.sh 60 > /data/log/rsam60.log 2>&1
+5 0,4,8,12,16,20 * * * ~/scripts/rsam/run.sh 240 > /data/log/rsam240.log 2>&1
+5 0,12 * * * ~/scripts/rsam/run.sh 720 > /data/log/rsam720.log 2>&1
+5 0 * * * ~/scripts/rsam/run.sh 1440 > /data/log/rsam1440.log 2>&1
 
+```
 Ensure each cron job specified is running without errors and corresponding results are stored in the database.
 
