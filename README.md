@@ -51,4 +51,23 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'rsamuser'@'localhost' WITH GRANT OPTION;
 mysql> flush privileges;
 ```
 
+### Python Scripts Install
+
+Instructions below assumes use of Anaconda, which is recommended.  
+1)	Install Python 3: https://docs.anaconda.com/anaconda/install/linux/. The instructions will assume you have installed anaconda3 under /opt.  If you install anaconda3 elsewhere, replace /opt/anaconda3 in this instruction with your installation directory.  
+2)	Install ObsPy: https://github.com/obspy/obspy/wiki/Installation-via-Anaconda. Instructions here creates an ‘obspy’ environment.  Use ‘rsam’ here instead, e.g. conda create -n rsam python=3.7.  
+3)	Install ffRSAM Python scripts by unzipping rsam.zip to a directory on your server.  
+4)	Configure ffRSAM Python scripts:  
+a)	Verify PYTHON_HOME in run.sh uses the correct anaconda installation and environment selected in steps 1 & 2.  If not, edit to use correct path.  
+b)	Copy config_template.py to config.py and edit config.py (watch out for proper placement of brackets and commas):  
+*buffer* – This variable specifies the potential latency, i.e. time between when seismic trace data is obtained at the station to when the data reaches the wave server.  Larger value here will help accommodate potential delays in the data acquisition process.  Default value is 20 minutes. 
+*db* –Stores the rsam database host, username, and password.  
+*wave_server* – Multiple wave server information can be stored here.  Example configuration is provided but should be replaced with the information (name, host, port) of the actual wave server where the trace data is stored.  
+*default_bands* – These are the default bands that will be used to calculate the ff RSAM data. It is not recommended to change this value.  Default bands are [[0.1,1],[1,3],[1,5],[1,10],[5,10],[10,15],[15,20]].  
+*channels* – The channels for which the rsam will be calculated are specified here.  Examples are provided but should be replaced with channels in your wave server.  RSAM calculations are typically performed on the vertical (Z) component of a station.  
+5)	Test the scripts installation by running “./run.sh 10”.  The run.sh script takes in the period, in minutes, as the argument.  It will calculate the RSAM and ff RSAM values for the channels specified in config.py for the specified period.  End time for the RSAM is calculated as [ current time ] – [ buffer ] – ([ current time]%[period]).  Resolve any errors and ensure that the 10 minute RSAM data is stored in the database.  
+6)	Set up cron jobs. The parameter to run.sh is the period in minutes. The desired periods to use for RSAM calculations may vary by installation.  Below example sets up cron jobs to calculate RSAM/ffRSAM for 10 minutes, 1 hour, 4 hours, 12 hours, and 1 day.  Replace ~/scripts with the directory where rsam.zip was unpacked.  Replace /data/log with the directory where you want the log files to go.  In this set up only logs for the latest run of each job is stored. For periods of hour or more, specify the minute time as the amount of buffer or lag time used in config.py.  For example, config_template.py has a default buffer of 5 minutes.  The cron jobs below reflect that 5 minutes in the minute configuration (last 4 entries).
+
+
+Ensure each cron job specified is running without errors and corresponding results are stored in the database.
 
