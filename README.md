@@ -27,3 +27,28 @@ systemctl start mariadb
 mysqladmin -u root password 'newpassword' 
 ```
 
+2. Create rsam database and objects. The rsam.sql file is in the sql folder.
+
+```
+mysql -u root -p < rsam.sql
+```
+Following tables will be created:
+
+**channels**
+
+This table stores a summary of what data RSAM values are calculated for.  It stores the SCNL channel name, the period (in seconds), start time, end time, low pass value of frequency band, and high pass value of frequency band. The start time and end times denote when the RSAM values for this channel period and band was first and last calculated.
+
+**rsam**
+
+This table stores the actual rsam values.
+
+3. Create user for accessing rsam database. Replace ‘password’ with rsamuser password:
+
+```
+mysql -u root -p
+mysql> CREATE USER 'rsamuser'@'localhost' IDENTIFIED BY 'password'; 
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'rsamuser'@'localhost' WITH GRANT OPTION;
+mysql> flush privileges;
+```
+
+
