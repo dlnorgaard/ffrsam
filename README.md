@@ -78,3 +78,49 @@ b)	Copy config_template.py to config.py and edit config.py (watch out for proper
 ```
 Ensure each cron job specified is running without errors and corresponding results are stored in the database.
 
+### Web Application Install
+
+1)	Install Apache web server:
+```
+yum install httpd
+systemctl start httpd
+systemctl enable httpd
+```
+
+2)	Install PHP and required libraries:
+```
+yum install php
+yum install php-common
+yum install php-mysqli
+yum install php-xmlrpc
+yum install php-json
+yum install php-gd
+```
+
+3)	Copy the web directory to /var/www/html/rsam.
+`cp -r web /var/www/html/rsam`
+4)	View the file api/v1/api.php in the rsam directory.
+a)	By default, it is expected that the database credentials are stored in /var/www/external/mysql.php which defines $db_server, $db_user, and $db_password.  If you do not have this file, create it as root, and then change ownership to root:apache with permissions set to 640 to ensure only root and the apache user can view the database credentials.
+```
+cd /var/www/external
+vi mysql.php
+```
+
+Example content of mysql.php:
+```
+<?php
+  $db_server="127.0.0.1";
+  $db_user="rsamuser";
+  $db_password="rsampw";
+?>
+```
+Set permissions:
+```
+chown root:apache mysql.php
+chmod 640 mysql.php
+```
+
+
+Once done ensure the web application works.  Go to the rsam web application url.  Example: http://localhost/rsam/.  The web application will look like below (channels, period, and frequency filters may differ).
+
+
