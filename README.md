@@ -121,6 +121,42 @@ chmod 640 mysql.php
 ```
 
 
-Once done ensure the web application works.  Go to the rsam web application url.  Example: http://localhost/rsam/.  The web application will look like below (channels, period, and frequency filters may differ).
+Once done ensure the web application works.  Go to the rsam web application url.  Example: http://localhost/rsam/.  
 
+* Test to see if the View Channels link pops open the summary of available data.
+* Select a channel and click on 'Plot' to see if a plot is created.
 
+If all is working you are done!
+
+## Back Populating or Populating a Test Database
+The ffRSAM application is designed to store calculated RSAM values from time of installation/configuration onward.  It is not designed to support calculation of past data.  Nonetheless, a script to back-populate is provided for instances such as when connectivity to the wave server is disrupted.  
+
+To back-populate, find the back_populate.py script (in same directory as where rsam.py and run.sh sits) and edit the input parameters at the top of the file (server, port, station, channel, network, location, start_time, end_time, period).  Ensure the rsam database connection string is also valid (e.g. edit default file if it is not at /etc/my.cnf).  Then open back_populate.sh and ensure that the PYTHON_HOME is the same as the PYTHON_HOME defined in run.sh.  Then run ./back_populate.sh from command line.
+
+The back populate script can also be used for testing or troubleshooting against a test rsam database.  First the test rsam database must be created by importing rsam.sql as a different schema (e.g. rsam_test).  Then edit the database connection in back_populate.py to use the test database, e.g. rsam_test, instead of rsam.  Then modify input parameters and run back_populate.sh.  The data will be loaded into the test database.
+
+## Troubleshooting
+
+*JavaScript*
+
+JavaScript errors and output can be seen in the browser’s developer tools console.  Typically, you can find this through the browser menu, but the location and name of this console may vary.
+
+*PHP*
+
+PHP is used for the REST API and is called by JavaScript to get data from the database.  PHP errors are often found in the web server log.  On CentOS this is usually /var/log/httpd/error_log or /var/log/httpd/ssl_error if SSL is enabled.
+
+*SQL*
+
+To see if there are any inconsistencies between channels and rsam table on start times:
+```
+select a.cid, a.channel, a.period, a.start_time, (min(b.end_time) - INTERVAL period SECOND) as fix_start_time, a.end_time, max(b.end_time)
+from channels a
+join rsam b on a.cid=b.cid
+group by b.cid
+having a.start_time != min(b.end_time) - INTERVAL period SECOND;
+```
+The above should return no rows, but in case where there were manual adjustments made to the database (e.g. some data deleted) there might be inconsistency.  If there is, the below SQL will fix the start times in channels table:
+```
+update channels a
+set a.start_time = (select min(b.end_time) - INTERVAL a.period SECOND from rsam b where b.cid=a.cid)
+```
