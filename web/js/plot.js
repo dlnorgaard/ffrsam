@@ -144,6 +144,7 @@ function downloadCsv(input){
   csvContent += header + "\r\n";
   var row = null;
   var dataset=[];
+  var et2dsidx={};
   var dsidx=-1;
   var pet;
   // reformat data
@@ -155,15 +156,19 @@ function downloadCsv(input){
     var f1=r.f1;
     var f2=r.f2;
     var et=r.end_time+"Z";
-    if(pet != et){
-      dsidx++;
+    dsidx=et2dsidx[et];
+    if(dsidx == null){
+      dsidx=Object.keys(et2dsidx).length;
+      console.log(dsidx);
+      et2dsidx[et]=dsidx;
       row=[];
       for(var j=0;j<header.length;j++){
         row.push(null);
       }
+      console.log(row);
       dataset.push(row);
+      console.log(dataset[dsidx]);
       dataset[dsidx][0]=et;
-      pet=et;
     }
     var v=parseFloat(rsam[i].value);
     var station=channel.split("$")[0];
