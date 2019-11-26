@@ -61,6 +61,8 @@ def process(st, et):
     if len(stream) == 0:
         continue
     
+    for m in range(len(stream)):
+        stream[m].data=np.where(stream[m].data==-2**31,0,stream[m].data)
     stream.detrend('demean')
     if len(stream) > 1: 
         stream.taper(max_percentage=0.01)
@@ -90,7 +92,7 @@ def rsam(channel_name, stream, stf, etf):
     print(sql)
     cursor.execute(sql)
     cid=cursor.lastrowid
-    if cid == 0L: # no updates to channel table so get cid manually
+    if cid==0: # no updates to channel table so get cid manually
       sql="SELECT cid FROM channels WHERE channel='%s' and period=%d and f1=0 and f2=0;"%\
       (channel_name, period)
       cursor.execute(sql)
@@ -121,7 +123,7 @@ def ffrsam(channel_name, stream, stf, etf, f1, f2):
     print(sql)
     cursor.execute(sql)
     cid=cursor.lastrowid
-    if cid == 0L :  # no updates to channel so get cid manually
+    if cid==0 :  # no updates to channel so get cid manually
       sql="SELECT cid FROM channels WHERE channel='%s' and period=%d and round(f1,2)=round(%.1f,2) and round(f2,2)=round(%.1f,2);"%\
       (channel_name, period, f1, f2)
       print(sql)
