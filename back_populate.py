@@ -7,15 +7,15 @@ import MySQLdb
 import config as cfg
 
 # Input parameters
-server="192.168.0.3"
+server="192.168.0.104"
 port=16024
-station='FG8'
-channel='BHZ'
-network='GI'
-location='00'
-start_time=UTCDateTime("20190105190000")
-end_time=UTCDateTime("20190705200000")
-period=43200 # In SECONDS
+station='LCY'
+channel='EHZ'
+network='SN'
+location=''
+start_time=UTCDateTime("20130901000000")
+end_time=UTCDateTime("20171209140000")
+period=3600 # In SECONDS
 bands=cfg.default_bands
 
 # Make log directory
@@ -48,6 +48,7 @@ while(st >= start_time):
     response = client.get_availability(network, station, location, channel)
     log.write(str(response)+"\n")
     if(len(response)==0):    # full data not available
+        print("Full data not available. Skipping.");
         et=et - period
         st=et - period
         continue
@@ -55,16 +56,18 @@ while(st >= start_time):
     print(stream)
     log.write(str(stream)+"\n")
     if len(stream) == 0:
+        print("Zero length stream. Skipping.");
         et=et - period
         st=et - period
         continue
 
+    for m in range(len(stream)):
+        stream[m].data=np.where(stream[m].data==-2**31,0,stream[m].data)
+    stream.detrend('demean')
     if len(stream) > 1:
-        stream.detrend('demean')
         stream.taper(max_percentage=0.01)
         stream.merge(fill_value=0)
-    else:
-        stream.detrend('demean')
+
     # unfiltered RSAM
     rsam=np.array([np.sqrt(np.mean(np.square(tr.data))) for tr in stream])
     log.write(str(rsam)+"\n")
@@ -73,14 +76,14 @@ while(st >= start_time):
     print(sql)
     cursor.execute(sql)
     cid=cursor.lastrowid
-    if cid==0L: 
+    if cid==0: 
       sql="SELECT cid FROM channels WHERE channel='%s' and period=%d and f1=0 and f2=0;"%\
       (channel_name, period) 
       cursor.execute(sql)
       for row in cursor.fetchall():
         cid=row[0]
     print("cid=",cid)
-    sql="INSERT INTO rsam(cid, end_time, value) values(%d, '%s', %.4f) ON DUPLICATE KEY UPDATE value=%.4f"%\
+    sql="INSERT INTO rsam(cid, end_time, value) values(%d, '%s', %.4f) ON DUPLICATE KEY UPDATE value=%.4f;"%\
     (cid, etf, rsam, rsam)
     print(sql)
     cursor.execute(sql)
@@ -97,19 +100,19 @@ while(st >= start_time):
             msg=f1, f2, str(rsam)
             print(msg)
             log.write(str(msg)+"\n")
-
             sql="INSERT INTO channels(channel, period, start_time, end_time, f1, f2) values('%s', %d, '%s', '%s', %.1f, %.1f) ON DUPLICATE KEY UPDATE start_time=least(start_time,'%s'), end_time=greatest(end_time,'%s');"%\
             (channel_name, period, stf, etf, f1, f2, stf, etf)
             print(sql)
             cursor.execute(sql)
             cid=cursor.lastrowid
-            if cid==0L:
+            if cid==0:
               sql="SELECT cid FROM channels WHERE channel='%s' and period=%d and round(f1,2)=round(%.1f,2) and round(f2,2)=round(%.1f,2);"%\
               (channel_name, period, f1, f2)
               print(sql)
               cursor.execute(sql)
               for row in cursor.fetchall():
                 cid=row[0]
+            print("cid=",cid)
             sql="INSERT INTO rsam(cid,end_time,value) values(%d, '%s', %.4f) ON DUPLICATE KEY UPDATE value=%.4f;"%\
             (cid, etf, rsam, rsam)
             print(sql)
