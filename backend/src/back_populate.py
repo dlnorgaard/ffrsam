@@ -5,6 +5,7 @@ from obspy.core.stream import Stream
 import numpy as np
 import MySQLdb
 import config as cfg
+import db
 
 # Input parameters
 server="192.168.0.104"
@@ -18,12 +19,8 @@ end_time=UTCDateTime("20171209140000")
 period=3600 # In SECONDS
 bands=cfg.default_bands
 
-# Make log directory
-if not os.path.isdir(cfg.log_dir):
-  os.makedirs(cfg.log_dir)
-
 # Connect to database
-conn = MySQLdb.connect(db='rsam', host=cfg.db['host'], user=cfg.db['username'], passwd=cfg.db['password'], read_default_file="/etc/my.cnf")
+conn = MySQLdb.connect(db='rsam', host=db.host, user=db.username, passwd=db.password, read_default_file="/etc/my.cnf")
 cursor = conn.cursor()
 
 et=end_time
@@ -38,7 +35,7 @@ while(st >= start_time):
     channel_name="%s$%s$%s$%s"%(station, channel, network, location)
     print(channel_name)
     filename = "%s_%s:%s:%s:%s_%d%02d%02d_%d.log"%("RSAM", station, channel, network, location, et.year, et.month, et.day, period)
-    logfile = os.path.join(cfg.log_dir, filename)
+    logfile = os.path.join("/opt/ffrsam/log", filename)
     log = open(logfile,"a")
 
     # get wave server client

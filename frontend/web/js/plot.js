@@ -119,7 +119,7 @@ function getRsam(input){
         f[0]="0";
         f.push("0");
       }
-      url="/seismic/rsam/api/v1/getRsam?channel="+channel+"&period="+input.period+"&f1="+f[0]+"&f2="+f[1]+"&start_time="+input.st+"&end_time="+input.et;
+      url="api/getRsam?channel="+channel+"&period="+input.period+"&f1="+f[0]+"&f2="+f[1]+"&start_time="+input.st+"&end_time="+input.et;
       var jsonData = $.ajax({
         url: url,
         dataType: "json",

@@ -8,7 +8,7 @@ google.charts.setOnLoadCallback(getTable);
 // Get channel data
 function getTable(){
   var jsonData = $.ajax({
-    url: "/seismic/rsam/api/v1/getChannelsTable",
+    url: "/api/getChannelsTable",
     dataType: "json",
     async: false
   }).responseText;

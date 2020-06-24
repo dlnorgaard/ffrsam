@@ -5,7 +5,7 @@ google.charts.load('current', {'packages':['corechart']});
 function getChannels(){
   // get channel data
   var cj = $.ajax({
-    url: "/seismic/rsam/api/v1/getChannels",
+    url: "/api/getChannels",
     dataType: "json",
     async: false
   }).responseText;
@@ -13,7 +13,7 @@ function getChannels(){
 
   // get periods 
   var pj = $.ajax({
-    url: "/seismic/rsam/api/v1/getPeriods",
+    url: "/api/getPeriods",
     dataType: "json",
     async: false
   }).responseText;
@@ -21,7 +21,7 @@ function getChannels(){
     
   // get filters 
   var fj = $.ajax({
-    url: "/seismic/rsam/api/v1/getFilters",
+    url: "/api/getFilters",
     dataType: "json",
     async: false
   }).responseText;
