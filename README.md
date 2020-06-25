@@ -75,8 +75,6 @@ Edit config.py
 
 ### Build and run images
 
-Build the docker images:
-
 ```
 docker-compose build
 docker-compose up -d
