@@ -6,19 +6,51 @@ The components (backend, frontend, database) of ffRSAM run as Docker containers.
 
 ## System Requirements
 
-Docker Engine (see https://www.docker.com/)
+Docker and Docker Compose 
+
+https://www.docker.com/
+https://docs.docker.com/get-docker/
+https://docs.docker.com/compose/install/
 
 This application is meant to run on a centralized server so the website can be accessed by everyone in the observatory.
 
 ## Installation Instructions
 
-Select your installation directory and clone ffrsam repository:
+Select your installation directory and clone ffrsam repository.  Change directory into the respository.
 
 ```
 git clone https://code.usgs.gov/vsc/ffrsam.git
 cd ffrsam
 ```
 
+Copy template.env to .env 
+
+```
+cp template.env .env
+```
+
+Edit the .env file.
+
+DB_USER is the database user with permissions to the database.
+
+DB_PASSWORD is the database user password.
+
+ROOT_PASSWORD is the mysql root password to use. 
+
+WEB_PORT is the port the web service will run on.  16050 is the default but can be changed.
+
+DATA_DIR is the directory on the physical or virtual machine where the mysql data files will be written to.  This directory must exist on the server and should be allocated sufficient space for data and growth.  1GB is a good place to start but more space may need to be allocated over time depending on the number of channels that are being stored.
+
+Example (do not use the same passwords as below): 
+  
+```
+DB_USER=rsamuser
+DB_PASSWORD=rsampassword
+ROOT_PASSWORD=rootpwd
+WEB_PORT=16050
+DATA_DIR=./data
+```
+ 
 Build the docker images:
 
 ```
@@ -35,7 +67,13 @@ a1542ae979c1        ffrsam_backend      "supercronic /app/cr…"   46 minutes ago 
 4d074b213ee7        mariadb:latest      "docker-entrypoint.s…"   26 hours ago        Up 40 minutes             3306/tcp                ffrsam-db
 ```
 
-The following containers should be running: ffrsam-frontend, ffrsam-backend, ffrsam-db.
+The following containers should be running: 
+
+- ffrsam-frontend
+- ffrsam-backend
+- ffrsam-db
+
+The application can be accessed via the p
 
 ## Troubleshooting
 
