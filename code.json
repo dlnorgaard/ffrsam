@@ -1,0 +1,36 @@
+[
+  {
+    "name": ffRSAM
+    "organization": "U.S. Geological Survey",
+    "description": "Calculate and plot frequency filtered RSAM",
+    "version": "1.0.0",
+    "status": "Release Candidate",
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://code.usgs.gov/vsc/ffrsam/blob/master/LICENSE.md"
+        }
+      ]
+    },
+    "disclaimerURL": "https://code.usgs.gov/vsc/ffrsam/blob/master/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/vsc/ffrsam.git",
+    "vcs": "git",
+    "laborHours": 0,
+    "tags": [
+      "usgs",
+      "seismic",
+      "rsam",
+      "plot"
+    ],
+    "languages": [ "PHP", "JavaScript", "Python"],
+    "contact": {
+      "name": "Diana Norgaard, USGS Volcano Science Center",
+      "email": "dnorgaard@usgs.gov"
+    },
+    "date": {
+      "metadataLastUpdated": "2020-06-25"
+    }
+  }
+]
