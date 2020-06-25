@@ -8,11 +8,11 @@ The components (backend, frontend, database) of ffRSAM run as Docker containers.
 
 Docker and Docker Compose 
 
-https://www.docker.com/
-https://docs.docker.com/get-docker/
-https://docs.docker.com/compose/install/
+- https://www.docker.com/
+- https://docs.docker.com/get-docker/
+- https://docs.docker.com/compose/install/
 
-This application is meant to run on a centralized server so the website can be accessed by everyone in the observatory.
+This application is meant to run on a centralized server so the website can be accessed by everyone in the observatory.  It needs to run continuously to process new data so it is not suitable for desktop installation.
 
 ## Installation Instructions
 
@@ -31,15 +31,11 @@ cp template.env .env
 
 Edit the .env file.
 
-DB_USER is the database user with permissions to the database.
-
-DB_PASSWORD is the database user password.
-
-ROOT_PASSWORD is the mysql root password to use. 
-
-WEB_PORT is the port the web service will run on.  16050 is the default but can be changed.
-
-DATA_DIR is the directory on the physical or virtual machine where the mysql data files will be written to.  This directory must exist on the server and should be allocated sufficient space for data and growth.  1GB is a good place to start but more space may need to be allocated over time depending on the number of channels that are being stored.
+- DB_USER is the database user with permissions to the database.
+- DB_PASSWORD is the database user password.
+- ROOT_PASSWORD is the mysql root password to use. 
+- WEB_PORT is the port the web service will run on.  16050 is the default but can be changed.
+- DATA_DIR is the directory on the physical or virtual machine where the mysql data files will be written to.  This directory must exist on the server and should be allocated sufficient space for data and growth.  1GB is a good place to start but more space may need to be allocated over time depending on the number of channels that are being stored.
 
 Example (do not use the same passwords as below): 
   
@@ -73,13 +69,15 @@ The following containers should be running:
 - ffrsam-backend
 - ffrsam-db
 
-The application can be accessed via the p
+The application can be accessed via the web port, e.g.:
+
+http://localhost:16050 or http://hostname:16050
+
+In order to ensure that other hosts on the network can access this, be sure to have the firewall open for port 16050 on the server.
 
 ## Troubleshooting
 
 ### Checking logs
-
-To view logs
 
 ``` 
 docker logs <container name>
