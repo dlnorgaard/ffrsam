@@ -14,6 +14,12 @@ Docker and Docker Compose
 
 This application is meant to run on a centralized server so the website can be accessed by everyone in the observatory.  It needs to run continuously to process new data so it is not suitable for desktop installation.
 
+Minimum recommended computer specifications:
+
+- 5 GB disk space
+- 128 MB RAM
+- 1 CPU
+
 ## Installation Instructions
 
 Select your installation directory and clone ffrsam repository.  Change directory into the respository.
