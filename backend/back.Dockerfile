@@ -38,12 +38,8 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
 # copy crontab
 COPY crontab.txt /app/crontab
 
-# copy Python scripts
-USER ffrsam
-#CMD ["mkdir","/opt/ffrsam"]
-#COPY --chown=ffrsam:ffrsam src/* /opt/ffrsam/
-
 # start supercronic
+USER ffrsam
 CMD [ "supercronic", "/app/crontab" ]
 
 # DONE

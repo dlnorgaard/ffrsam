@@ -12,6 +12,9 @@ RUN docker-php-source extract \
 
 COPY php.ini /usr/local/etc/php/
 
+# enable rewrite
+RUN cp /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/
+
 # expose port 80
 EXPOSE 80
 
@@ -19,9 +22,5 @@ EXPOSE 80
 HEALTHCHECK --interval=5m --timeout=3s \
   CMD curl -f http://localhost/ || exit 1
 
-# create ffrsam group & user
-RUN groupadd -g 2020 ffrsam \
-&& useradd -m -u 2020 -g ffrsam ffrsam 
-USER ffrsam
 
 # DONE
