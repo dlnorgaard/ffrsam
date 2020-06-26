@@ -5,22 +5,24 @@ from obspy.core.stream import Stream
 import numpy as np
 import MySQLdb
 import config as cfg
-import db
 
 # Input parameters
-server="192.168.0.104"
-port=16024
-station='LCY'
-channel='EHZ'
-network='SN'
-location=''
-start_time=UTCDateTime("20130901000000")
-end_time=UTCDateTime("20171209140000")
+server=cfg.wws["AVO"]["server"]
+port=cfg.wws["AVO"]["port"]
+station='ACH'
+channel='BHZ'
+network='AV'
+location='--'
+start_time=UTCDateTime("20200626000000")
+end_time=UTCDateTime("20200626040000")  #YYYYMMDDHHMMSS
 period=3600 # In SECONDS
-bands=cfg.default_bands
+
+# band and log
+bands=cfg.bands
+log = sys.stdout
 
 # Connect to database
-conn = MySQLdb.connect(db='rsam', host=db.host, user=db.username, passwd=db.password, read_default_file="/etc/my.cnf")
+conn = MySQLdb.connect(db='rsam', host='db', user=os.environ['DB_USER'], passwd=os.environ['DB_PASSWORD'], read_default_file="/etc/my.cnf")
 cursor = conn.cursor()
 
 et=end_time
@@ -34,9 +36,6 @@ while(st >= start_time):
     # create log file
     channel_name="%s$%s$%s$%s"%(station, channel, network, location)
     print(channel_name)
-    filename = "%s_%s:%s:%s:%s_%d%02d%02d_%d.log"%("RSAM", station, channel, network, location, et.year, et.month, et.day, period)
-    logfile = os.path.join("/opt/ffrsam/log", filename)
-    log = open(logfile,"a")
 
     # get wave server client
     client = Client(server, port)

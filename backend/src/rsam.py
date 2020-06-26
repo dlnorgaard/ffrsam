@@ -21,6 +21,8 @@ log = sys.stdout
 def process(st, et):
   global cfg
   global log
+  
+  bands = cfg.bands
 
   # formatted dates
   etf = et.strftime(cfg.date_format)
@@ -37,7 +39,6 @@ def process(st, et):
     station=c['station']
     location=c['location']
     channel=c['channel']
-    bands=c['bands']
     scnl=station, channel, network, location
     print(scnl)
     

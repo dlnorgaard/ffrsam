@@ -17,7 +17,7 @@ This application is meant to run on a centralized server so the website can be a
 Minimum recommended computer specifications:
 
 - 5 GB disk space
-- 128 MB RAM
+- 512 MB RAM
 - 1 CPU
 
 ## Installation Instructions
@@ -104,12 +104,35 @@ http://localhost:16050 or http://hostname:16050
 
 In order to ensure that other hosts on the network can access this, be sure to have the firewall open for port 16050 on the server.
 
+## Back Populating
+
+To populate past or gap periods, you can use the backend/src/back_populate.* scripts.  Edit the input parameters in back_populate.py:
+
+Example:
+
+```
+# Input parameters
+server=cfg.wws["AVO"]["server"]
+port=cfg.wws["AVO"]["port"]
+station='ACH'
+channel='BHZ'
+network='AV'
+location='--'
+start_time=UTCDateTime("20200626000000")
+end_time=UTCDateTime("20200626040000")  #YYYYMMDDHHMMSS
+period=3600 # In SECONDS
+```
+
+Then run either the back_populate.sh (Linux/Mac) or back_populate.bat (Windows) script.  It will automatically kick off the back_populate.py in the ffrsam-backend container.  It is recommended to run the file from a terminal or DOS prompt so that you can view the output as it runs.  Check the output for any errors.
+
+
 ## Troubleshooting
 
 ### Checking logs
 
 ``` 
 docker logs <container name>
+docker logs -f <container name>
 
 ```
 ### Connecting to container
