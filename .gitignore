@@ -4,3 +4,5 @@ log
 __pycache__
 /.env
 /.project
+/.pydevproject
+/backend/src/config.py
