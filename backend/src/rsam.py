@@ -11,6 +11,8 @@ import numpy as np
 import MySQLdb
 import config as cfg
 
+log = sys.stdout
+
 #########################################################################################################
 # FUNCTIONS 
 #########################################################################################################
@@ -19,6 +21,8 @@ import config as cfg
 def process(st, et):
   global cfg
   global log
+  
+  bands = cfg.bands
 
   # formatted dates
   etf = et.strftime(cfg.date_format)
@@ -35,16 +39,12 @@ def process(st, et):
     station=c['station']
     location=c['location']
     channel=c['channel']
-    bands=c['bands']
     scnl=station, channel, network, location
     print(scnl)
     
-    # create log file    
+    # create channel name
     channel_name="%s$%s$%s$%s"%(station, channel, network, location)
-    print(channel_name)
-    filename = "%s_%s:%s:%s:%s_%d%02d%02d_%d.log"%("RSAM", station, channel, network, location, et.year, et.month, et.day, period)
-    logfile = os.path.join(cfg.log_dir, filename)
-    log = open(logfile,"a")
+    print(channel_name)    
 
     # get wave server client
     client = Client(server, port) 
@@ -148,13 +148,9 @@ if len(sys.argv) == 1:
   sys.exit()
 else:
   period = 60.0*int(sys.argv[1])
-
-# Make log directory
-if not os.path.isdir(cfg.log_dir):
-  os.makedirs(cfg.log_dir)
        
 # Connect to database
-conn = MySQLdb.connect(db='rsam', host=cfg.db['host'], user=cfg.db['username'], passwd=cfg.db['password'], read_default_file="/etc/my.cnf")
+conn = MySQLdb.connect(db='rsam', host='db', user=os.environ['DB_USER'], passwd=os.environ['DB_PASSWORD'], read_default_file="/etc/my.cnf")
 cursor = conn.cursor()
 
 # get start and end time

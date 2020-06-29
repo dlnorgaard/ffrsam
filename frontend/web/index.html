@@ -65,7 +65,7 @@
   let m = moment();
   var dformat='YYYY-MM-DD';
   var today = m.format(dformat);
-  var current_time = m.format('H:mm'); 
+  var current_time = m.format('HH:mm'); 
   var yesterday = m.subtract(1, 'days').format(dformat);
   document.getElementById('start_date').value=yesterday;
   document.getElementById('start_time').value=current_time;

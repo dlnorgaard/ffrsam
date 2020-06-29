@@ -1,0 +1,10 @@
+# 10 minute RSAM
+*/10 * * * * /opt/ffrsam/run.sh 10 
+# 1 hour RSAM
+20 * * * * /opt/ffrsam/run.sh 60 
+# 4 hour RSAM
+20 */4 * * * /opt/ffrsam/run.sh 240 
+# 12 hour RSAM
+20 */12 * * * /opt/ffrsam/run.sh 720
+# 1 day RSAM
+20 0 * * * /opt/ffrsam/run.sh 1440 

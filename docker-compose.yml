@@ -1,0 +1,65 @@
+version: '3'
+services:
+
+  db:    
+    image: mariadb:latest
+    container_name: ffrsam-db
+    volumes:
+      - ${DATA_DIR}:/var/lib/mysql
+      - ./database/rsam.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: rsam
+    restart: always
+    logging:
+      driver: json-file
+      options: 
+        max-size: '10m'
+
+  backend:
+    depends_on:
+      - db
+    build:
+      context: ./backend
+      dockerfile: back.Dockerfile
+    container_name: ffrsam-backend
+    volumes:
+      - ./backend/src:/opt/ffrsam
+    links:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    restart: always
+    logging:
+      driver: json-file
+      options: 
+        max-size: '10m'
+
+  frontend:
+    depends_on:
+      - db
+    build:
+      context: ./frontend
+      dockerfile: front.Dockerfile
+    container_name: ffrsam-frontend
+    volumes:
+      - ./frontend/web:/var/www/html
+    ports:
+      - ${WEB_PORT}:80
+    links:
+      - 'db'
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    restart: always
+    logging:
+      driver: json-file
+      options: 
+        max-size: '10m'

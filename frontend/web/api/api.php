@@ -1,7 +1,4 @@
 <?php
-     
-#require_once("/var/www/html/include/auth.php");
-#require_once("/var/www/html/include/Rest.inc.php");
 require_once("./Rest.inc.php");
      
 class API extends REST {
@@ -17,7 +14,9 @@ class API extends REST {
     }
      
     private function dbConnect(){
-        require_once("/var/www/external/mysql.php");
+	$db_server='db';
+        $db_user=getenv('DB_USER');
+        $db_password=getenv('DB_PASSWORD');
         $this->db = mysqli_connect($db_server,$db_user,$db_password, 'rsam');
 	if(!$this->db){
   	  die("Connection failed: " . mysqli_connect_error());
