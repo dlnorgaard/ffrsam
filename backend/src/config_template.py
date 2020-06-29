@@ -1,5 +1,4 @@
 date_format="%Y-%m-%d %H:%M:%S"
-log_dir="log"
 
 taper=5
 buffer=60.0*5.0  # latency in seconds
@@ -11,7 +10,7 @@ bands = [[0.1,1],[1,3],[1,5],[1,10],[5,10],[10,15],[15,20]]
 wws={
     "AVO":{
         "server": "pubavo1.wr.usgs.gov",
-        "port": 16024
+        "port": 16022
     },
     #"wws2":{
         #"server": "192.168.0.3",
