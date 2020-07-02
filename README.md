@@ -6,7 +6,9 @@ The components (backend, frontend, database) of ffRSAM run as Docker containers.
 
 ## System Requirements
 
-Docker and Docker Compose 
+Access to a Wave Server for data source is required.  
+
+Additioanlly, for the ffRSAM program, Docker and Docker Compose is required. 
 
 - https://www.docker.com/
 - https://docs.docker.com/get-docker/
@@ -69,7 +71,7 @@ cp config_template.py config.py
 Edit config.py
 
 - buffer – This variable specifies the potential latency, i.e. time between when seismic trace data is obtained at the station to when the data reaches the wave server.  Larger value here will help accommodate potential delays in the data acquisition process.  Default value is 20 minutes.
-- wave_server – Multiple wave server information can be stored here.  Example configuration is provided but should be replaced with the information (name, host, port) of the actual wave server where the trace data is stored.
+- wws – Multiple wave server information can be stored here.  Example configuration is provided but should be replaced with the information (name, host, port) of the actual wave server where the trace data is stored.
 - bands – These are the default bands that will be used to calculate the ff RSAM data. It is not recommended to change this value.  Default bands are [[0.1,1],[1,3],[1,5],[1,10],[5,10],[10,15],[15,20]].
 - channels – The channels for which the rsam will be calculated are specified here.  Examples are provided but should be replaced with channels in your wave server.  RSAM calculations are typically performed on the vertical (Z) component of a station.
 
