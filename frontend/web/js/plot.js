@@ -329,6 +329,7 @@ function drawChart(input=null, plotId=null){
     }else{
       chart = new google.visualization.ScatterChart(chartDiv);
     }
+    charts[plotId]=chart;
   }
   //google.visualization.events.addListener(chart,'select', function(e){selectHandler(chart,data)});
   chart.draw(data, options);
