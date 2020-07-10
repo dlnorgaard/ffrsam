@@ -8,7 +8,7 @@ google.charts.setOnLoadCallback(getTable);
 // Get channel data
 function getTable(){
   var jsonData = $.ajax({
-    url: "/api/getChannelsTable",
+    url: "api/getChannelsTable",
     dataType: "json",
     async: false
   }).responseText;
