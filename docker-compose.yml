@@ -29,6 +29,7 @@ services:
     container_name: ffrsam-backend
     volumes:
       - ./backend/src:/opt/ffrsam
+      - ${IMAGE_DIR}:/images
     links:
       - db
     environment:

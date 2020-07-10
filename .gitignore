@@ -6,3 +6,5 @@ __pycache__
 /.project
 /.pydevproject
 /backend/src/config.py
+squashfs-root
+/images
