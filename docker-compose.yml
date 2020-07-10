@@ -52,7 +52,10 @@ services:
       dockerfile: front.Dockerfile
     container_name: ffrsam-frontend
     volumes:
-      - ./frontend/web:/var/www/html
+      - ./frontend/index.html:/var/www/html/index.html
+      - ./frontend/web:/var/www/html/ffrsam
+      - ./frontend/web/favicon.ico:/var/www/html/favicon.ico
+      - ${IMAGE_DIR}:/var/www/html/images
     ports:
       - ${WEB_PORT}:80
     links:

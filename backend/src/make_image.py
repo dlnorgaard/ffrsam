@@ -27,27 +27,36 @@ def create_image(channel_name):
   global days
   global period 
   global xlabel 
-  try:
-    # determine start and end times
-    now = time.time()
-    et = now - cfg.buffer
-    et = UTCDateTime(et - (et % 60*period))
-    st = et - (days*24*60*60)
-    etf = et.strftime(cfg.date_format)
-    stf = st.strftime(cfg.date_format)
-    # get data
-    sql="SELECT a.end_time as time, a.value as rsam FROM rsam a JOIN channels b ON a.cid=b.cid WHERE b.channel='%s' AND period=%d AND f1=0 AND f2=0 AND a.end_time >= '%s' AND a.end_time <= '%s';"%(channel_name, 60*period, stf, etf)
-    df = pd.read_sql(sql, conn)
-    df = df.rename(columns={'time':xlabel,'rsam':'RSAM'})
-    # plot data
-    fig=px.line(df,x=xlabel,y='RSAM', width=os.environm['IMAGE_WIDTH', height=os.environ['IMAGE_HEIGHT'])
-    fig.update_layout(xaxis_range=[stf,etf],title_text=channel_name.replace('$',' '))
-    filename="/images/%s_%d.png"%(channel_name,days)
-    fig.write_image(filename)
-    print("Generated %d day plot for %s"%(days,channel_name))
-  except:
-    e = sys.exc_info()[0]
-    print("Error creating %d day plot for %s: {}"%(days,channel_name,e))
+
+  # determine start and end times
+  now = time.time()
+  nowf = UTCDateTime(now);
+  nowf = nowf.strftime('%l:%M%p %Z %b %d, %Y');
+  et = now - cfg.buffer
+  et = UTCDateTime(et - (et % 60*period))
+  st = et - (days*24*60*60)
+  etf = et.strftime(cfg.date_format)
+  stf = st.strftime(cfg.date_format)
+  # get data
+  sql="SELECT a.end_time as time, a.value as rsam FROM rsam a JOIN channels b ON a.cid=b.cid WHERE b.channel='%s' AND period=%d AND f1=0 AND f2=0 AND a.end_time >= '%s' AND a.end_time <= '%s';"%(channel_name, 60*period, stf, etf)
+  df = pd.read_sql(sql, conn)
+  df = df.rename(columns={'time':xlabel,'rsam':'RSAM'})
+  # plot data
+  if 'IMAGE_WIDTH' in os.environ:
+    width=int(os.environ['IMAGE_WIDTH'])
+  else:
+    print('nope')
+    width=800
+  if 'IMAGE_HEIGHT' in os.environ:
+    height=int(os.environ['IMAGE_HEIGHT'])
+  else:
+    height=400
+  fig=px.line(df,x=xlabel,y='RSAM', width=width, height=height)
+  title=channel_name.replace('$',' ')+'   Created '+nowf
+  fig.update_layout(xaxis_range=[stf,etf],title_text=title)
+  filename="/images/%s_%d.png"%(channel_name,days)
+  fig.write_image(filename)
+  print("Generated %d day plot for %s"%(days,channel_name))
 
 
 #############################################################################################

@@ -1,8 +1,9 @@
 # ffRSAM
 
-ffRSAM is a web-based application to allow users to view plots of pre-calculated Real-time Seismic-Amplitude Measurement (RSAM) and frequency filtered (ff) RSAM.  The system has a back-end Python script run by cron jobs to retrieve trace data from a wave server (e.g. Winston), calculate RSAM and ff RSAM based on pre-determined frequency bands, and store the calculated values in a MariaDB database.  The front-end, or user interface, is a web-application written in plain HTML and JavaScript. REST API written in PHP is used to query the database.
+ffRSAM is a web-based application to allow users to view plots of pre-calculated Real-time Seismic-Amplitude Measurement (RSAM) and frequency filtered (ff) RSAM. Two ways to view plots are provided:
 
-The components (backend, frontend, database) of ffRSAM run as Docker containers.
+* Pre-generated RSAM plots for 1 day, 1 month, and 1 year
+* Interactive plots using custom querying tool  
 
 ## System Requirements
 
@@ -48,6 +49,9 @@ Edit the .env file.
 - ROOT_PASSWORD is the mysql root password to use. 
 - WEB_PORT is the port the web service will run on.  16050 is the default but can be changed.
 - DATA_DIR is the directory on the physical or virtual machine where the mysql data files will be written to.  This directory must exist on the server and should be allocated sufficient space for data and growth.  1GB is a good place to start but more space may need to be allocated over time depending on the number of channels that are being stored.
+- IMAGE_DIR is the directory on the physical or virtual machine where the pre-generated images are written to.  This directory must exist on the server and should be allocated sufficient space for the images to be written. 2MB per channel configured is a good place to start.
+- IMAGE_WIDTH is the desired width in pixels of the pre-generated images. Default is 1200.
+- IMAGE_HEIGHT is the desired height in pixels of the pre-generated images. Default is 400.
 
 Example (do not use the same passwords as below): 
   

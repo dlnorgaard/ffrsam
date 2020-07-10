@@ -5,7 +5,7 @@ google.charts.load('current', {'packages':['corechart']});
 function getChannels(){
   // get channel data
   var cj = $.ajax({
-    url: "/api/getChannels",
+    url: "api/getChannels",
     dataType: "json",
     async: false
   }).responseText;
@@ -13,7 +13,7 @@ function getChannels(){
 
   // get periods 
   var pj = $.ajax({
-    url: "/api/getPeriods",
+    url: "api/getPeriods",
     dataType: "json",
     async: false
   }).responseText;
@@ -21,7 +21,7 @@ function getChannels(){
     
   // get filters 
   var fj = $.ajax({
-    url: "/api/getFilters",
+    url: "api/getFilters",
     dataType: "json",
     async: false
   }).responseText;
