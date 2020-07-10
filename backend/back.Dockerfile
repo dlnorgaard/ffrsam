@@ -3,14 +3,17 @@
 FROM ubuntu:bionic
 LABEL maintainer="dnorgaard@usgs.gov"
 WORKDIR /
+ENV TZ=UTC \
+DEBIAN_FRONTEND=noninteractive
 # install packages
-RUN apt-get -y update && \
-apt-get -y install python3 python3-pip libmysqlclient-dev curl 
+RUN apt-get -y update && apt-get -y install \
+	python3 \
+        python3-pip \
+        libmysqlclient-dev \
+        curl 
 
 # install obspy 
 # see https://github.com/obspy/obspy/wiki/Installation-on-Linux-via-Apt-Repository 
-ENV TZ=UTC \
-DEBIAN_FRONTEND=noninteractive
 RUN echo "deb http://deb.obspy.org bionic main" >> /etc/apt/sources.list  && \
 curl -fsSLO https://raw.githubusercontent.com/obspy/obspy/master/misc/debian/public.key && \
 apt-key add ./public.key && \
@@ -18,7 +21,29 @@ apt-get -y update && \
 apt-get -y install python3-obspy 
 
 # install other python packages
-RUN pip3 install mysqlclient
+RUN pip3 install mysqlclient pandas psutil plotly 
+
+# Plotly dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        wget \
+        xvfb \
+        xauth \
+        libgtk2.0-0 \
+        libxtst6 \
+        libxss1 \
+        libgconf-2-4 \
+        libnss3 \
+        libasound2
+RUN mkdir -p /opt/orca && \
+    cd /opt/orca && \
+    wget https://github.com/plotly/orca/releases/download/v1.2.1/orca-1.2.1-x86_64.AppImage && \
+    chmod +x orca-1.2.1-x86_64.AppImage && \
+    ./orca-1.2.1-x86_64.AppImage --appimage-extract && \
+    rm orca-1.2.1-x86_64.AppImage && \
+    printf '#!/bin/bash \nxvfb-run --auto-servernum --server-args "-screen 0 640x480x24" /opt/orca/squashfs-root/app/orca "$@"' > /usr/bin/orca && \
+    chmod +x /usr/bin/orca && \
+    chmod -R 777 /opt/orca
 
 # create ffrsam group & user
 RUN groupadd -g 2020 ffrsam \
