@@ -4,6 +4,13 @@ $f1=number_format($_REQUEST['f1'],1);
 $f2=number_format($_REQUEST['f2'],1);
 $bands = [[0,0],[0.1,1],[1,3],[1,5],[1,10],[5,10],[10,15],[15,20]];
 $daylist=[1,30,365];
+# Get base URL
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    $protocol = "https";
+}else{
+    $protocol = "http";
+}
+$base_url=$protocol."://".$_SERVER['HTTP_HOST'];
 ?>
 <HTML>
 <HEAD>
@@ -12,7 +19,7 @@ $daylist=[1,30,365];
  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  <link rel="stylesheet" href="./css/rsam.css">
- <TITLE>RSAM <?php echo $days;?> Days</TITLE>
+ <TITLE>ffRSAM</TITLE>
 </HEAD>
 <BODY>
 <section>
@@ -55,13 +62,16 @@ Note:
 </ul>
 <hr>
 <?php
+$id=0;
 if(filtered($f1,$f2)){
   foreach(glob("../images/*_${days}_${f1}_${f2}.png") as $img){
-    echo "<p><img src='$img' /><p>";
+    show_image($img,$base_url,$id); 
+    $id++;
   }
 }else{
   foreach(glob("../images/*_${days}.png") as $img){
-    echo "<p><img src='$img' /><p>";
+    show_image($img,$base_url,$id); 
+    $id++;
   }
 }
 
@@ -69,7 +79,23 @@ if(filtered($f1,$f2)){
 </section>
 </BODY>
 </HTML>
+<script>
+function copy(id){
+  var copyText=document.querySelector('#'+id);
+  copyText.select();
+  document.execCommand('copy');
+}
+</script>
 <?php
+function show_image($img,$base_url,$id){
+  $filename=preg_replace("/..\/images\//","",$img);
+  $url=$base_url."/images/".$filename;
+  $len=strlen($url);
+  echo "<button title='copy' onclick='copy(\"url$id\")'>&#128203</button>&nbsp;\n";
+  echo "<button title='open in new tab' onclick='window.open(\"$url\",\"_blank\")'>&#x2197</button>&nbsp;\n";
+  echo "<input type='text' size='$len' id='url$id' value='$url'>\n";
+  echo "<p><p><img src='$img' /><hr>\n";
+}
 
 function filtered($f1, $f2){
   if($f1 > 0 || $f2 > 0){
