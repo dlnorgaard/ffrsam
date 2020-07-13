@@ -1,5 +1,9 @@
 <?php
 $days=$_REQUEST['days'];
+$f1=number_format($_REQUEST['f1'],1);
+$f2=number_format($_REQUEST['f2'],1);
+$bands = [[0,0],[0.1,1],[1,3],[1,5],[1,10],[5,10],[10,15],[15,20]];
+$daylist=[1,30,365];
 ?>
 <HTML>
 <HEAD>
@@ -13,11 +17,35 @@ $days=$_REQUEST['days'];
 <BODY>
 <section>
 <h1>RSAM <?php echo $days;?> Day Plots</h1>
-View: &nbsp;&nbsp;
-<a href="./plots.php?days=1">Day</a>&nbsp;&nbsp;
-<a href="./plots.php?days=30">Month</a>&nbsp;&nbsp;
-<a href="./plots.php?days=365">Year</a>&nbsp;&nbsp;
-<a href="./index.html">Custom</a>&nbsp;&nbsp;
+<?php
+if(filtered($f1,$f2)){
+  echo "<h3 style='color:red;'>Filtered: [ $f1, $f2 ]</h3>";
+}
+?>
+<table class='table table-condensed table-sm table-hover rsam'>
+  <tr><th></th><th colspan=<?php sizeof($bands);?>>Filter</th><tr>
+<?php
+foreach($daylist as $d){
+  echo "<tr>";
+  echo "<th>";
+  if($d==1){ echo "Day"; }
+  if($d==30){ echo "Month"; }
+  if($d==365){ echo "Year"; }
+  echo "</th>";
+  foreach($bands as $b){
+    $url="./plots.php?days=$d&f1=$b[0]&f2=$b[1]";
+    $label="None";
+    if(filtered($b[0],$b[1])){
+      $label="[$b[0] - $b[1] Hz]";
+    }
+    echo "<td><a href='$url'>$label</a></td>";
+  }
+  echo "<td><a href='./index.html'>Custom</a></td>";
+  echo "</tr>";
+}
+?>
+</table>
+<p>
 <p><p>
 Note:
 <ul>
@@ -27,12 +55,26 @@ Note:
 </ul>
 <hr>
 <?php
-foreach(glob("../images/*_$days.png") as $img){
-  echo "<p><img src='$img' /><p>";
+if(filtered($f1,$f2)){
+  foreach(glob("../images/*_${days}_${f1}_${f2}.png") as $img){
+    echo "<p><img src='$img' /><p>";
+  }
+}else{
+  foreach(glob("../images/*_${days}.png") as $img){
+    echo "<p><img src='$img' /><p>";
+  }
 }
 
 ?>
 </section>
 </BODY>
 </HTML>
+<?php
+
+function filtered($f1, $f2){
+  if($f1 > 0 || $f2 > 0){
+    return true;
+  }
+  return false;
+}
 

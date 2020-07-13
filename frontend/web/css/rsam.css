@@ -28,3 +28,9 @@ div.plot{
 select,input,button{
   border-radius: 4px;
 }
+
+table.rsam{
+  max-width: 1200px;
+  width: auto;
+  padding: 10px;
+}
