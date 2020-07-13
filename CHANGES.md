@@ -6,10 +6,9 @@ Required steps for upgrade from Version 2:
 * Change directory to cloned repository location
 * Get updates using `git pull` 
 * Add new variables to .env file:
-** IMAGE_DIR: Directory on system where images will be written to, e.g. `IMAGE_DIR=./images`
-** IMAGE_WIDTH: Desired width of image, e.g. `IMAGE_WIDTH=800`
-** IMAGE_HEIGHT: Desired height of image, e.g. `IMAGE_HEIGHT=400`
-** This is where generated image files will go
+    * IMAGE_DIR: Directory on system where images will be written to, e.g. `IMAGE_DIR=./images`
+    * IMAGE_WIDTH: Desired width of image, e.g. `IMAGE_WIDTH=800`
+    * IMAGE_HEIGHT: Desired height of image, e.g. `IMAGE_HEIGHT=400`
 * `docker-compose build`
 * `docker-compose up -d`
 

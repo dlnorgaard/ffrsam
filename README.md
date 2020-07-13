@@ -47,7 +47,7 @@ Edit the .env file.
 - DB_USER is the database user with permissions to the database.
 - DB_PASSWORD is the database user password.
 - ROOT_PASSWORD is the mysql root password to use. 
-- WEB_PORT is the port the web service will run on.  16050 is the default but can be changed.
+- WEB_PORT is the port the web service will run on.  17000 is the default but can be changed.
 - DATA_DIR is the directory on the physical or virtual machine where the mysql data files will be written to.  This directory must exist on the server and should be allocated sufficient space for data and growth.  1GB is a good place to start but more space may need to be allocated over time depending on the number of channels that are being stored.
 - IMAGE_DIR is the directory on the physical or virtual machine where the pre-generated images are written to.  This directory must exist on the server and should be allocated sufficient space for the images to be written. 2MB per channel configured is a good place to start.
 - IMAGE_WIDTH is the desired width in pixels of the pre-generated images. Default is 1200.
@@ -59,7 +59,7 @@ Example (do not use the same passwords as below):
 DB_USER=rsamuser
 DB_PASSWORD=rsampassword
 ROOT_PASSWORD=rootpwd
-WEB_PORT=16050
+WEB_PORT=17000
 DATA_DIR=./data
 ```
  
@@ -93,7 +93,7 @@ Verify the 3 components are running:
 ``` 
 D:\Programs\docker\ffrsam>docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                    PORTS                   NAMES
-9ba90bbdd75d        ffrsam_frontend     "docker-php-entrypoi…"   39 minutes ago      Up 39 minutes (healthy)   0.0.0.0:16050->80/tcp   ffrsam-frontend
+9ba90bbdd75d        ffrsam_frontend     "docker-php-entrypoi…"   39 minutes ago      Up 39 minutes (healthy)   0.0.0.0:17000->80/tcp   ffrsam-frontend
 a1542ae979c1        ffrsam_backend      "supercronic /app/cr…"   46 minutes ago      Up 40 minutes                                     ffrsam-backend
 4d074b213ee7        mariadb:latest      "docker-entrypoint.s…"   26 hours ago        Up 40 minutes             3306/tcp                ffrsam-db
 ```
@@ -106,9 +106,11 @@ The following containers should be running:
 
 The application can be accessed via the web port, e.g.:
 
-http://localhost:16050 or http://hostname:16050
+http://localhost:17000 or http://hostname:17000
 
-In order to ensure that other hosts on the network can access this, be sure to have the firewall open for port 16050 on the server.
+In order to ensure that other hosts on the network can access this, be sure to have the firewall open for port 17000 on the server.
+
+For the pre-generated images, the day plot should begin populating after 10 minutes, the month plot after 1 hour, and year plot after 24 hours.  Unless back-populating is performed (see below), images will show data only from day of installation forward.
 
 ## Back Populating
 
@@ -139,7 +141,6 @@ Then run either the back_populate.sh (Linux/Mac) or back_populate.bat (Windows) 
 ``` 
 docker logs <container name>
 docker logs -f <container name>
-
 ```
 ### Connecting to container
 
