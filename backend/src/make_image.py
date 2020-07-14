@@ -10,6 +10,7 @@ from obspy.core import UTCDateTime
 
 def process():
   global cfg
+  global days
   bands=cfg.bands
 
   # process each channel
@@ -19,18 +20,17 @@ def process():
     location=c['location']
     channel=c['channel']
     channel_name="%s$%s$%s$%s"%(station, channel, network, location)
-    create_image(channel_name, 0.0, 0.0)
-    for i in range(0,len(bands)):
-      f1=float(bands[i][0])
-      f2=float(bands[i][1])
-      create_image(channel_name, f1, f2)
+    for d in days:
+      create_image(channel_name, 0.0, 0.0, d)
+      for i in range(0,len(bands)):
+        f1=float(bands[i][0])
+        f2=float(bands[i][1])
+        create_image(channel_name, f1, f2, d)
 
-
-def create_image(channel_name, f1, f2):
+def create_image(channel_name, f1, f2, d):
   global cfg
   global cursor
   global conn
-  global days
   global period 
   global xlabel 
 
@@ -40,7 +40,7 @@ def create_image(channel_name, f1, f2):
   nowf = nowf.strftime('%l:%M%p %Z %b %d, %Y');
   et = now - cfg.buffer
   et = UTCDateTime(et - (et % 60*period))
-  st = et - (days*24*60*60)
+  st = et - (d*24*60*60)
   etf = et.strftime(cfg.date_format)
   stf = st.strftime(cfg.date_format)
   # get data
@@ -66,11 +66,11 @@ def create_image(channel_name, f1, f2):
   title=title+subtitle
   fig.update_layout(xaxis_range=[stf,etf],title_text=title)
   if f1==0 and f2==0:
-    filename="/images/%s_%d.png"%(channel_name,days)
+    filename="/images/%s_%d.png"%(channel_name,d)
   else:
-    filename="/images/%s_%d_%.1f_%.1f.png"%(channel_name,days,f1,f2)
+    filename="/images/%s_%d_%.1f_%.1f.png"%(channel_name,d,f1,f2)
   fig.write_image(filename)
-  print("Generated %d day plot for %s [%.1f,%.1f]"%(days,channel_name,f1,f2))
+  print("Generated %d day plot for %s [%.1f,%.1f]"%(d,channel_name,f1,f2))
 
 
 #############################################################################################
@@ -87,13 +87,13 @@ else:
 
 # determine number of days for plot
 if period==10:
-  days=1
+  days=[1]
   xlabel='Time'
 elif period==60:
-  days=30
+  days=[7,30]
   xlabel='Date'
 elif period==1440:
-  days=365
+  days=[365]
   xlabel='Date'
 else:
   print("No images will be generated for this cycle.")

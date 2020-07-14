@@ -3,7 +3,7 @@ $days=$_REQUEST['days'];
 $f1=number_format($_REQUEST['f1'],1);
 $f2=number_format($_REQUEST['f2'],1);
 $bands = [[0,0],[0.1,1],[1,3],[1,5],[1,10],[5,10],[10,15],[15,20]];
-$daylist=[1,30,365];
+$daylist=[1,7,30,365];
 # Get base URL
 if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     $protocol = "https";
@@ -18,6 +18,7 @@ $base_url=$protocol."://".$_SERVER['HTTP_HOST'];
  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ <meta http-equiv="refresh" content="180">
  <link rel="stylesheet" href="./css/rsam.css">
  <TITLE>ffRSAM</TITLE>
 </HEAD>
@@ -36,6 +37,7 @@ foreach($daylist as $d){
   echo "<tr>";
   echo "<th>";
   if($d==1){ echo "Day"; }
+  if($d==7){ echo "Week"; }
   if($d==30){ echo "Month"; }
   if($d==365){ echo "Year"; }
   echo "</th>";
@@ -57,6 +59,7 @@ foreach($daylist as $d){
 Note:
 <ul>
 <li>1 day plots use 10 minute RSAMs</li>
+<li>7 day plots use 1 hour RSAMs</li>
 <li>30 day plots use 1 hour RSAMs</li>
 <li>365 day plots use 1 day RSAMs</li>
 </ul>
