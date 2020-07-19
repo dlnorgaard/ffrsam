@@ -1,4 +1,9 @@
-Version 2.1
+Version 2.2 TBD
+---
+* Add 1 week plot
+* Make make_image.py executable
+
+Version 2.1 7/14/20
 ---
 Addition of automatic image generation with 1, 30, and 365 day RSAM plots.
 
@@ -12,7 +17,7 @@ Required steps for upgrade from Version 2:
 * `docker-compose build`
 * `docker-compose up -d`
 
-Version 2
+Version 2  7/3/20
 ---
 Containerized version of the application to simplify installation.  
 
