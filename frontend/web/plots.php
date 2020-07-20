@@ -19,6 +19,7 @@ $base_url=$protocol."://".$_SERVER['HTTP_HOST'];
  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  <meta http-equiv="refresh" content="180">
+ <meta http-equiv="Cache-Control" content="no-store" />
  <link rel="stylesheet" href="./css/rsam.css">
  <TITLE>ffRSAM</TITLE>
 </HEAD>
