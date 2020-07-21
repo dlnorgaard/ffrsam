@@ -9,11 +9,13 @@ ffRSAM is a web-based application to allow users to view plots of pre-calculated
 
 Access to a Wave Server for data source is required.  
 
-Additioanlly, for the ffRSAM program, Docker and Docker Compose is required. 
+Additionally, for the ffRSAM program, Docker and Docker Compose is required. 
 
 - https://www.docker.com/
 - https://docs.docker.com/get-docker/
 - https://docs.docker.com/compose/install/
+
+Podman and podman-compose will work as an alternative to Docker.  
 
 This application is meant to run on a centralized server so the website can be accessed by everyone in the observatory.  It needs to run continuously to process new data so it is not suitable for desktop installation.
 
@@ -27,9 +29,17 @@ Minimum recommended computer specifications:
 
 ### Clone repository
 
-Select your installation directory and clone ffrsam repository.  Change directory into the respository.
+Select your installation directory (e.g. /opt is a good place for Linux) and clone ffrsam repository.  Change directory into the respository.
 
 ```
+cd /opt
+git clone https://github.com/dnorgaard-usgs/ffrsam.git
+cd ffrsam
+```
+Or, if you have access to code.usgs.gov:
+
+```
+cd /opt
 git clone https://code.usgs.gov/vsc/ffrsam.git
 cd ffrsam
 ```
@@ -61,8 +71,35 @@ DB_PASSWORD=rsampassword
 ROOT_PASSWORD=rootpwd
 WEB_PORT=17000
 DATA_DIR=./data
+IMAGE_DIR=./images
+IMAGE_WIDTH=1200
+IMAGE_HEIGHT=400
 ```
+
+Notes: 
+
+Make sure the data and image directories specified exist.  While this example places the data and images directory under /opt/ffrsam, you may want to consider creating these directories elsewhere on the server with more physical space.
  
+```
+cd /opt/ffrsam
+mkdir data
+mkdir images
+```
+
+The permissions on IMAGE_DIR specified must have writable permissions for all users. This is because the ffrsam-backend container that writes the images run as user with uid of 2020. Alternatively, you can create a user on your system with uid & gid of 2020 and set your image directory permissions writable by that user.
+
+```
+chmod a+w /opt/ffrsam/images
+```
+or
+
+```
+groupadd -g 2020 ffrsam
+useradd -u 2020 -g 2020 ffrsam
+chown -R ffrsam:ffrsam /opt/ffrsam
+```
+
+
 ### Configure application
 
 Create config.py
@@ -112,6 +149,56 @@ In order to ensure that other hosts on the network can access this, be sure to h
 
 For the pre-generated images, the day plot should begin populating after 10 minutes, the month plot after 1 hour, and year plot after 24 hours.  Unless back-populating is performed (see below), images will show data only from day of installation forward.
 
+## Set up service
+
+On some systems the containers do not automatically start on reboot or restart of docker engine. It is best to configure each of the containers to start on boot.
+
+For CentOS 7 create ffrsam-db.service, ffrsam-frontend.service, and ffrsam-backend.service files in /etc/systemd/system:
+
+Example ffrsam-db.service:
+
+```
+[Unit]
+Description             = ffRSAM database
+
+[Service]
+WorkingDirectory        = /opt/ffrsam/
+ExecStart               = docker start -a ffrsam-db
+ExecStop                = docker stop ffrsam-db
+```
+
+The ffrsam-backend and ffrsam-frontend containers should ideally start after ffrsam-db container has started.  Additional 'After' and 'Requires' statements may be helpful.
+
+Example ffrsam-frontend.service:
+
+```
+[Unit]
+Description             = ffRSAM frontend
+After                   = multi-user.target ffrsam-db.service
+Requires                = ffrsam-db.service
+
+[Service]
+WorkingDirectory        = /opt/ffrsam/
+ExecStart               = docker start -a ffrsam-frontend
+ExecStop                = docker stop ffrsam-frontend
+
+```
+
+Example ffrsam-backend.service:
+
+```
+[Unit]
+Description             = ffRSAM backend
+After                   = multi-user.target ffrsam-db.service
+Requires                = ffrsam-db.service
+
+[Service]
+WorkingDirectory        = /opt/ffrsam/
+ExecStart               = docker start -a ffrsam-backend
+ExecStop                = docker stop ffrsam-backend
+
+```
+
 ## Back Populating
 
 To populate past or gap periods, you can use the backend/src/back_populate.* scripts.  Edit the input parameters in back_populate.py:
@@ -147,3 +234,14 @@ docker logs -f <container name>
 ```
 docker exec -it <container name> /bin/bash
 ```
+
+## Podman
+
+On CentOS 8, you can use Podman and podman-compose as an alternative:
+
+```
+yum install podman python
+pip3 install podman-compose
+```
+
+Then replace all "docker" commands with "podman" and "docker-compose" commands with "podman-compose".
