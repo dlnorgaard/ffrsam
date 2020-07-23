@@ -11,17 +11,13 @@ import numpy as np
 import MySQLdb
 import config as cfg
 
-log = sys.stdout
-
 #########################################################################################################
 # FUNCTIONS 
 #########################################################################################################
 
 # Process all channels for given start and end date
 def process(st, et):
-  global cfg
-  global log
-  
+  global cfg  
   bands = cfg.bands
 
   # formatted dates
@@ -39,9 +35,7 @@ def process(st, et):
     station=c['station']
     location=c['location']
     channel=c['channel']
-    scnl=station, channel, network, location
-    print(scnl)
-    
+        
     # create channel name
     channel_name="%s$%s$%s$%s"%(station, channel, network, location)
     print(channel_name)    
@@ -51,13 +45,10 @@ def process(st, et):
      
     # get wave data
     response = client.get_availability(network, station, location, channel)
-    #if(len(response)==0 or response[-1][5] < et):    # full data not available
-    log.write(str(response)+"\n")
     if(len(response)==0):    # full data not available
         continue
     stream = client.get_waveforms(network, station, location, channel, st, et) 
     #print(stream)
-    log.write(str(stream)+"\n")
     if len(stream) == 0:
         continue
     
@@ -85,7 +76,6 @@ def rsam(channel_name, stream, stf, etf):
   global conn
   global period
   rsam=np.array([np.sqrt(np.mean(np.square(tr.data))) for tr in stream])
-  log.write(str(rsam)+"\n")
   try:
     sql="INSERT INTO channels(channel, period, start_time, end_time) values('%s', %d, '%s', '%s') ON DUPLICATE KEY UPDATE start_time=least(start_time,'%s'), end_time=greatest(end_time,'%s');"%\
     (channel_name, period, stf, etf, stf, etf)
@@ -116,7 +106,6 @@ def ffrsam(channel_name, stream, stf, etf, f1, f2):
   rsam=np.array([np.sqrt(np.mean(np.square(tr.data))) for tr in tmp])
   msg=f1, f2, str(rsam)
   print(msg)
-  log.write(str(msg)+"\n")
   try:
     sql="INSERT INTO channels(channel, period, start_time, end_time, f1, f2) values('%s', %d, '%s', '%s', %.1f, %.1f) ON DUPLICATE KEY UPDATE start_time=least(start_time,'%s'), end_time=greatest(end_time,'%s');"%\
     (channel_name, period, stf, etf, f1, f2, stf, etf)
