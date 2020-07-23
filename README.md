@@ -202,6 +202,37 @@ ExecStop                = docker stop ffrsam-backend
 
 ## Back Populating
 
+There are two ways to back populate ffRSAM data:
+
+### All channels in config.py
+
+Connect to ffrsam-backend container.
+
+```
+docker exec -it ffrsam-backend /bin/bash
+```
+
+Run ffrsam script from /opt/ffrsam.
+
+Syntax: ./run.sh <period> <start time> <end time>
+
+```
+cd /opt/ffrsam
+./run.sh 1440 20200701000000 20200731000000
+```
+
+In above example the first parameter, 1440 is the period in minutes, so 1 day period. This will also regenerate 1 year images. Allowed values for period:
+
+- 10: 10 minute RSAMs (regenerate 1 day plot)
+- 60: 1 hour RSAMs (regenerate 7 & 30 day plots)
+- 240: 4 hour RSAMs
+- 720: 12 hours RSAMs
+- 1440: 24 hour RSAMs (regenerate 1 year plot)
+
+The start and end time are simply in YYYYMMDDHHmmss format.  Be sure to use a time range that is available in Winston.  
+
+### One channel
+
 To populate past or gap periods, you can use the backend/src/back_populate.* scripts.  Edit the input parameters in back_populate.py:
 
 Example:
@@ -221,6 +252,7 @@ period=3600 # In SECONDS
 
 Then run either the back_populate.sh (Linux/Mac) or back_populate.bat (Windows) script.  It will automatically kick off the back_populate.py in the ffrsam-backend container.  It is recommended to run the file from a terminal or DOS prompt so that you can view the output as it runs.  Check the output for any errors.
 
+Note: Editing this file may prevent you from pulling future updates in git.  If this happens simply revert the change with `git checkout -- back_populate.py`.
 
 ## Troubleshooting
 
