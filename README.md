@@ -96,7 +96,7 @@ or
 ```
 groupadd -g 2020 ffrsam
 useradd -u 2020 -g 2020 ffrsam
-chown -R ffrsam:ffrsam /opt/ffrsam
+chown -R ffrsam:ffrsam /opt/ffrsam/images
 ```
 
 
@@ -119,6 +119,7 @@ Edit config.py
 ### Build and run images
 
 ```
+cd /opt/ffrsam
 docker-compose build
 docker-compose up -d
 ```
