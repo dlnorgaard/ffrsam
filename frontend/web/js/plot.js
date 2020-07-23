@@ -159,15 +159,12 @@ function downloadCsv(input){
     dsidx=et2dsidx[et];
     if(dsidx == null){
       dsidx=Object.keys(et2dsidx).length;
-      console.log(dsidx);
       et2dsidx[et]=dsidx;
       row=[];
       for(var j=0;j<header.length;j++){
         row.push(null);
       }
-      console.log(row);
       dataset.push(row);
-      console.log(dataset[dsidx]);
       dataset[dsidx][0]=et;
     }
     var v=parseFloat(rsam[i].value);
@@ -323,15 +320,17 @@ function drawChart(input=null, plotId=null){
   var chartDiv = document.getElementById(chartId);
   chartDiv.innerHTML="";
   var chart=charts[plotId];
-  if(chart == null){
-    if(type == 'Line'){
-      chart = new google.visualization.LineChart(chartDiv);
-    }else{
-      chart = new google.visualization.ScatterChart(chartDiv);
-    }
-    charts[plotId]=chart;
+  if(chart != null){
+    chart.clearChart;
   }
+  if(type == 'Line'){
+    chart = new google.visualization.LineChart(chartDiv);
+  }else{
+    chart = new google.visualization.ScatterChart(chartDiv);
+  }
+  charts[plotId]=chart;
   //google.visualization.events.addListener(chart,'select', function(e){selectHandler(chart,data)});
+  console.log(data);
   chart.draw(data, options);
   drawToolBar(plotId, input, chart);
 }
