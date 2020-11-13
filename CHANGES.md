@@ -2,6 +2,7 @@ Version 2.2 TBD
 ---
 * Add 1 week plot
 * Make make_image.py executable
+* Add tini to backend to prevent zombie processes
 
 Version 2.1 7/14/20
 ---
