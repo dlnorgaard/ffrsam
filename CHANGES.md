@@ -1,10 +1,11 @@
-Version 2.2 TBD
+Version 2.2.0 11/13/2020
 ---
 * Add 1 week plot
 * Make make_image.py executable
 * Add tini to backend to prevent zombie processes
+* Specify scipy version to address errors from deprecated numpy.testing.nosetester
 
-Version 2.1 7/14/20
+Version 2.1.0 7/14/2020
 ---
 Addition of automatic image generation with 1, 30, and 365 day RSAM plots.
 
@@ -18,7 +19,7 @@ Required steps for upgrade from Version 2:
 * `docker-compose build`
 * `docker-compose up -d`
 
-Version 2  7/3/20
+Version 2  7/3/2020
 ---
 Containerized version of the application to simplify installation.  
 
