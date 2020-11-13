@@ -21,7 +21,7 @@ apt-get -y update && \
 apt-get -y install python3-obspy 
 
 # install other python packages
-RUN pip3 install mysqlclient pandas psutil plotly 
+RUN pip3 install mysqlclient pandas psutil plotly scipy==1.5.4 
 
 # Plotly dependencies
 RUN apt-get update && \
@@ -62,6 +62,12 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
 
 # copy crontab
 COPY crontab.txt /app/crontab
+
+# Add Tini
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 
 # start supercronic
 USER ffrsam
